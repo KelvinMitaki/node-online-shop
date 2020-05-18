@@ -1,15 +1,25 @@
 const express = require("express");
 const path = require("path");
+
 const bodyParser = require("body-parser");
+
+const adminRouter = require("./routes/admin");
+const shopRouter = require("./routes/shop");
 
 const app = express();
 
 app.use(express.static(path.join(__dirname, "../public")));
-app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post("/products", (req, res) => {
-  console.log(req.body);
-  res.redirect("/");
+// PARSING INCOMING REQUESTS
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// ROUTES
+app.use(adminRouter);
+app.use(shopRouter);
+
+// 404 PAGE
+app.use((req, res, next) => {
+  res.status(404).send("Page not found");
 });
 
 app.listen(process.env.PORT, () =>
