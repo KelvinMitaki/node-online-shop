@@ -13,7 +13,7 @@
   "devDependencies": {},
   "scripts": {
     "start": "node app.js",
-    "dev": "env-cmd -f src/config/dev.env nodemon src/app.js -e js,ejs,json"
+    "dev": "env-cmd -f config/dev.env nodemon app.js -e js,ejs,json"
   },
   "repository": {
     "type": "git",

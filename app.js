@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 const { router } = require("./routes/admin");
 const shopRouter = require("./routes/shop");
+const { get404 } = require("./controllers/error");
 
 const adminRouter = router;
 
@@ -17,18 +18,14 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // SERVING STATIC FILES
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTES
 app.use(shopRouter);
 app.use(adminRouter);
 
 // 404 PAGE
-app.use((req, res, next) => {
-  res.status(404).render("404", {
-    pageTitle: "Not Found"
-  });
-});
+app.use(get404);
 
 app.listen(process.env.PORT, () =>
   console.log(`server started on port ${process.env.PORT}`)
