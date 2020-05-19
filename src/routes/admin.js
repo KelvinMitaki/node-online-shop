@@ -8,7 +8,11 @@ router.get("/", (req, res) => {
 
 router.get("/add-product", (req, res) => {
   res.render("add-product", {
-    pageTitle: "Add Product"
+    pageTitle: "Add Product",
+    path: "/add-product",
+    formsCSS: true,
+    productCSS: true,
+    activeAddProduct: true
   });
 });
 
