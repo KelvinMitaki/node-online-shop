@@ -1,10 +1,12 @@
 {
-  "name": "basics",
+  "name": "online-shop",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "dependencies": {
+    "@types/ejs": "^3.0.4",
     "body-parser": "^1.19.0",
+    "ejs": "^3.1.3",
     "env-cmd": "^10.1.0",
     "express": "^4.17.1"
   },
@@ -15,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KelvinMitaki/node-basics.git"
+    "url": "git+https://github.com/KelvinMitaki/node-online-shop.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/KelvinMitaki/node-basics/issues"
+    "url": "https://github.com/KelvinMitaki/node-online-shop/issues"
   },
-  "homepage": "https://github.com/KelvinMitaki/node-basics#readme"
+  "homepage": "https://github.com/KelvinMitaki/node-online-shop#readme"
 }

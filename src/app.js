@@ -2,10 +2,16 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const adminRouter = require("./routes/admin");
+const { router } = require("./routes/admin");
 const shopRouter = require("./routes/shop");
 
+const adminRouter = router;
+
 const app = express();
+
+// ADDING A VIEW ENGINE
+app.set("view engine", "ejs");
+app.set("views", "views");
 
 // PARSING INCOMING REQUESTS
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,7 +25,9 @@ app.use(adminRouter);
 
 // 404 PAGE
 app.use((req, res, next) => {
-  res.status(404).sendFile(path.join(__dirname, "../views", "404.html"));
+  res.status(404).render("404", {
+    pageTitle: "Not Found"
+  });
 });
 
 app.listen(process.env.PORT, () =>
