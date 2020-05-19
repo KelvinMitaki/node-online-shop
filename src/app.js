@@ -10,9 +10,12 @@ const app = express();
 // PARSING INCOMING REQUESTS
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// SERVING STATIC FILES
+app.use(express.static(path.join(__dirname, "../public")));
+
 // ROUTES
-app.use(adminRouter);
 app.use(shopRouter);
+app.use(adminRouter);
 
 // 404 PAGE
 app.use((req, res, next) => {
