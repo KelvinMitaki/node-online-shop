@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Cart = require("../models/cart");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -23,6 +24,7 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const prodId = req.params.productId;
+
   Product.findById(prodId, product => {
     if (!product) return res.redirect("/");
     const price = parseInt(product.price);
