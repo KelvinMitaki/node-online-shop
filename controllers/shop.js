@@ -33,9 +33,24 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    path: "/cart",
-    pageTitle: "Your Cart"
+  const itemsInCart = [];
+  Product.fetchAll(products => {
+    Cart.fetchAllIds(cart => {
+      const cartProducts = cart.products;
+
+      for (let cartProduct of cartProducts) {
+        const cartItems = products.filter(
+          product => product.id === cartProduct.id
+        );
+        itemsInCart.push({ ...cartItems[0], quantity: cartProduct.quantity });
+      }
+      console.log(itemsInCart);
+      res.render("shop/cart", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        itemsInCart
+      });
+    });
   });
 };
 
@@ -60,3 +75,32 @@ exports.getCheckout = (req, res, next) => {
     pageTitle: "Checkout"
   });
 };
+
+// Say I have two arrays
+
+// **ARRAY 1:**
+
+// ```
+// [
+//   {
+//     id: '0.3385486959963888',
+//     title: 'product 1'
+//   },
+//   {
+//     id: '0.5307392257622798',
+//     title: 'product 2'
+//   },
+//   {
+//     id: '0.036769713944472926',
+//     title: 'product 3'
+//   }
+// ]
+// ```
+// **ARRAY 2:**
+// ```
+// [
+//   { id: '0.3385486959963888', quantity: 2 },
+//   { id: '0.5307392257622798', quantity: 3 }
+// ]
+// ```
+// I want to compare them and return from array 1 only the products that the IDs are matching the IDs in array two, how can I do that
