@@ -25,6 +25,9 @@ exports.getEditProduct = (req, res, next) => {
   const prodId = req.params.productId;
   Product.findById(prodId, product => {
     if (!product) return res.redirect("/");
+    const price = parseInt(product.price);
+    product.price = price;
+
     res.render("admin/edit-product", {
       pageTitle: "Edit Product",
       path: "/admin/edit-product",
@@ -42,6 +45,13 @@ exports.postEditProduct = (req, res, next) => {
     res.redirect("/admin/products");
   });
 };
+
+exports.postDeleteProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.findByIdAndDelete(prodId);
+  res.redirect("/admin/products");
+};
+
 exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
     res.render("admin/products", {
