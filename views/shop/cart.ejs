@@ -6,7 +6,15 @@
     <main>
         <ul>
             <%for(let item of itemsInCart){%>
-            <li><%=item.title%> (<%=item.quantity%>)</li>
+            <li>
+                <P>
+                    <%=item.title%> (<%=item.quantity%>)
+                </P>
+                <form action="/cart-delete-item" method="post">
+                    <button type="submit" class="btn">Delete</button>
+                    <input type="hidden" name="productId" value="<%=item.id%>">
+                </form>
+            </li>
             <% }%>
         </ul>
     </main>
