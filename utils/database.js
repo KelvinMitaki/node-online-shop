@@ -1,16 +1,14 @@
 const mongodb = require("mongodb");
-
 const MongoClient = mongodb.MongoClient;
 
-const mongoConnect = async callback => {
+const MongoConnect = async callback => {
   try {
-    const client = await MongoClient.connect(
-      "mongodb+srv://kevinmitaki:kevinmitaki@cluster0-sdlak.mongodb.net/test?retryWrites=true&w=majority"
-    );
-    console.log("connected");
-    callback(client);
+    const client = await MongoClient.connect(process.env.MONGO_CLIENT, {
+      useUnifiedTopology: true
+    });
+    callback(null, client);
   } catch (error) {
-    console.log(error);
+    callback(error);
   }
 };
-module.exports = mongoConnect;
+module.exports = { MongoConnect };
