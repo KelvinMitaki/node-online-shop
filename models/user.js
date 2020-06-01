@@ -39,6 +39,23 @@ class User {
         { $set: { cart: updatedCart } }
       );
   }
+  async getProductCart() {
+    const productIds = this.cart.items.map(item => item.productId);
+    const products = await getDb()
+      .db()
+      .collection("products")
+      .find({ _id: { $in: productIds } })
+      .toArray();
+    return products.map(product => {
+      const productQuantity = this.cart.items.filter(
+        item => item.productId.toString() === product._id.toString()
+      )[0].quantity;
+      return {
+        ...product,
+        quantity: productQuantity
+      };
+    });
+  }
   static async findById(id) {
     return await getDb()
       .db()

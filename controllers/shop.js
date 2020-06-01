@@ -41,25 +41,13 @@ exports.deleteCart = (req, res, next) => {
   res.redirect("/cart");
 };
 
-exports.getCart = (req, res, next) => {
-  const itemsInCart = [];
-  Product.fetchAll(products => {
-    Cart.fetchAllIds(cart => {
-      const cartProducts = cart.products;
+exports.getCart = async (req, res, next) => {
+  const productsInCart = await req.user.getProductCart();
 
-      for (let cartProduct of cartProducts) {
-        const cartItems = products.filter(
-          product => product.id === cartProduct.id
-        );
-        itemsInCart.push({ ...cartItems[0], quantity: cartProduct.quantity });
-      }
-
-      res.render("shop/cart", {
-        path: "/cart",
-        pageTitle: "Your Cart",
-        itemsInCart
-      });
-    });
+  res.render("shop/cart", {
+    path: "/cart",
+    pageTitle: "Your Cart",
+    itemsInCart: productsInCart
   });
 };
 
