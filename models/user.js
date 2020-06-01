@@ -13,8 +13,24 @@ class User {
     await getDb().db().collection("users").insertOne(this);
   }
   async addToCart(product) {
-    // const cartProductIndex=this.cart.items.findIndex(pro=>pro._id===product._id)
-    const updatedCart = { items: [{ ...product, quantity: 1 }] };
+    const cartProductIndex = this.cart.items.findIndex(
+      pro => pro.productId.toString() === product._id.toString()
+    );
+    const updatedCartItems = [...this.cart.items];
+    let newQuantity = 1;
+    if (cartProductIndex !== -1) {
+      newQuantity = updatedCartItems[cartProductIndex].quantity + 1;
+      updatedCartItems[cartProductIndex].quantity = newQuantity;
+    } else {
+      updatedCartItems.push({
+        productId: new mongodb.ObjectId(product._id),
+        quantity: newQuantity
+      });
+    }
+
+    const updatedCart = {
+      items: updatedCartItems
+    };
     await getDb()
       .db()
       .collection("users")

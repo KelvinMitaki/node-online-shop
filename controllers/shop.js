@@ -63,10 +63,11 @@ exports.getCart = (req, res, next) => {
   });
 };
 
-exports.postCart = (req, res, next) => {
+exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, product =>
-    Cart.addProduct(prodId, parseInt(product.price))
+  await Product.findById(
+    prodId,
+    async product => await req.user.addToCart(product)
   );
   res.redirect("/cart");
 };
