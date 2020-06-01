@@ -3,6 +3,8 @@ const path = require("path");
 const Cart = require("./cart");
 const p = path.join(__dirname, "../data", "products.json");
 
+const { getDb } = require("../utils/database");
+
 const getProductsFromFile = cb => {
   fs.readFile(p, (err, fileContent) => {
     if (err) {
@@ -22,29 +24,9 @@ module.exports = class Product {
     this.price = price;
   }
 
-  save() {
-    getProductsFromFile(products => {
-      if (this.id) {
-        const updatedProducts = [...products];
-        const updatedProductIndex = products.findIndex(
-          prod => prod.id === this.id
-        );
-        updatedProducts[updatedProductIndex] = this;
-        fs.writeFile(
-          p,
-          JSON.stringify(updatedProducts),
-          err => err && console.log(err)
-        );
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(
-          p,
-          JSON.stringify(products),
-          err => err && console.log(err)
-        );
-      }
-    });
+  async save() {
+    const result = await getDb().db().collection("products").insertOne(this);
+    console.log(result);
   }
   static findByIdAndDelete(id) {
     getProductsFromFile(products => {

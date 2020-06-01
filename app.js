@@ -27,6 +27,6 @@ MongoConnect((err, client) => {
   if (err) {
     return console.log(err);
   }
-  console.log(client);
+
   app.listen(PORT, () => console.log(`server started on port ${PORT}`));
 });
