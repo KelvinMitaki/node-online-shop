@@ -16,8 +16,7 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-  constructor(id, title, imageUrl, description, price) {
-    this.id = id;
+  constructor(title, imageUrl, description, price) {
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -25,8 +24,11 @@ module.exports = class Product {
   }
 
   async save() {
-    const result = await getDb().db().collection("products").insertOne(this);
-    console.log(result);
+    const result = await getDb()
+      .db("shop")
+      .collection("products")
+      .insertOne(this);
+    return result;
   }
   static findByIdAndDelete(id) {
     getProductsFromFile(products => {
@@ -41,8 +43,9 @@ module.exports = class Product {
       });
     });
   }
-  static fetchAll(cb) {
-    getProductsFromFile(cb);
+  static async fetchAll(cb) {
+    const result = await getDb().db().collection("products").find({}).toArray();
+    cb(result);
   }
 
   static findById(id, cb) {
