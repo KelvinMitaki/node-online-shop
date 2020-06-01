@@ -1,9 +1,11 @@
 const fs = require("fs");
 const path = require("path");
+const mongodb = require("mongodb");
 const Cart = require("./cart");
 const p = path.join(__dirname, "../data", "products.json");
 
 const { getDb } = require("../utils/database");
+const ObjectId = mongodb.ObjectId;
 
 const getProductsFromFile = cb => {
   fs.readFile(p, (err, fileContent) => {
@@ -48,11 +50,13 @@ module.exports = class Product {
     cb(result);
   }
 
-  static findById(id, cb) {
-    getProductsFromFile(products => {
-      const product = products.find(prod => prod.id === id);
+  static async findById(id, cb) {
+    console.log("id-", id);
+    const result = await getDb()
+      .db()
+      .collection("products")
+      .findOne({ _id: new ObjectId(id) });
 
-      cb(product);
-    });
+    cb(result);
   }
 };
