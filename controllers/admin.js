@@ -39,14 +39,16 @@ exports.getEditProduct = (req, res, next) => {
     });
   });
 };
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = async (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, product => {
-    const { title, imageUrl, description, price } = req.body;
-    const prod = new Product(prodId, title, imageUrl, description, price);
-    prod.save();
-    res.redirect("/admin/products");
+  const { title, imageUrl, description, price } = req.body;
+  await Product.findByIdAndUpdate(prodId, {
+    title,
+    imageUrl,
+    description,
+    price
   });
+  res.redirect("/admin/products");
 };
 
 exports.postDeleteProduct = (req, res, next) => {

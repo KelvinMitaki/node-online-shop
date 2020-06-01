@@ -37,4 +37,10 @@ module.exports = class Product {
 
     cb(result);
   }
+  static async findByIdAndUpdate(id, update) {
+    await getDb()
+      .db()
+      .collection("products")
+      .updateOne({ _id: new ObjectId(id) }, { $set: update });
+  }
 };
