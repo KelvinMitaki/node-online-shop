@@ -21,36 +21,41 @@ exports.postAddProduct = async (req, res, next) => {
     console.log(error);
   }
 };
-exports.getEditProduct = (req, res, next) => {
-  const editMode = req.query.edit;
-  if (!editMode) {
-    return res.redirect("/");
-  }
-  const prodId = req.params.productId;
-
-  Product.findById(prodId, product => {
+exports.getEditProduct = async (req, res, next) => {
+  try {
+    const editMode = req.query.edit;
+    if (!editMode) {
+      return res.redirect("/");
+    }
+    const prodId = req.params.productId;
+    const product = await Product.findById(prodId);
     if (!product) return res.redirect("/");
     const price = parseInt(product.price);
     product.price = price;
-
     res.render("admin/edit-product", {
       pageTitle: "Edit Product",
       path: "/admin/edit-product",
       editing: editMode,
       product
     });
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 exports.postEditProduct = async (req, res, next) => {
-  const prodId = req.body.productId;
-  const { title, imageUrl, description, price } = req.body;
-  await Product.findByIdAndUpdate(prodId, {
-    title,
-    imageUrl,
-    description,
-    price
-  });
-  res.redirect("/admin/products");
+  try {
+    const prodId = req.body.productId;
+    const { title, imageUrl, description, price } = req.body;
+    await Product.findByIdAndUpdate(prodId, {
+      title,
+      imageUrl,
+      description,
+      price
+    });
+    res.redirect("/admin/products");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -59,12 +64,15 @@ exports.postDeleteProduct = (req, res, next) => {
   res.redirect("/admin/products");
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
+exports.getProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find({});
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
       path: "/admin/products"
     });
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
