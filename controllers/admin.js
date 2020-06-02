@@ -58,10 +58,14 @@ exports.postEditProduct = async (req, res, next) => {
   }
 };
 
-exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
-  Product.findByIdAndDelete(prodId);
-  res.redirect("/admin/products");
+exports.postDeleteProduct = async (req, res, next) => {
+  try {
+    const prodId = req.body.productId;
+    await Product.findByIdAndDelete(prodId);
+    res.redirect("/admin/products");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getProducts = async (req, res, next) => {
