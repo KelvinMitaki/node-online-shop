@@ -49,10 +49,14 @@ exports.getCart = async (req, res, next) => {
 };
 
 exports.postCart = async (req, res, next) => {
-  const prodId = req.body.productId;
-  const product = await Product.findById(prodId);
-  await req.user.addToCart(product);
-  res.redirect("/cart");
+  try {
+    const prodId = req.body.productId;
+    const product = await Product.findById(prodId);
+    await req.user.addToCart(product);
+    res.redirect("/cart");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.postOrder = async (req, res, next) => {
@@ -65,12 +69,18 @@ exports.postOrder = async (req, res, next) => {
 };
 
 exports.getOrders = async (req, res, next) => {
-  const orders = await Order.find({ "user._id": req.user._id });
-  res.render("shop/orders", {
-    path: "/orders",
-    pageTitle: "Your Orders",
-    orders
-  });
+  try {
+    const orders = await Order.find({ "user._id": req.user._id })
+      .populate("items.productId")
+      .exec();
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "Your Orders",
+      orders
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getCheckout = (req, res, next) => {
