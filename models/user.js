@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const Order = require("./order");
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -51,7 +53,6 @@ UserSchema.methods.deleteFromCart = function (product) {
   const cartProductIndex = this.cart.items.findIndex(
     prod => prod.productId.toString() === product._id.toString()
   );
-
   const cartItems = [...this.cart.items];
   const cartQuantity = cartItems[cartProductIndex].quantity;
   if (cartQuantity === 1) {
@@ -67,6 +68,19 @@ UserSchema.methods.deleteFromCart = function (product) {
     this.save();
   }
 };
+
+UserSchema.methods.addOrder = async function () {
+  const order = {
+    items: this.cart.items,
+    user: { _id: this._id, name: this.name }
+  };
+  const test = new Order(order);
+  await test.save();
+
+  this.cart = { items: [] };
+  this.save();
+};
+UserSchema.methods.getUserOrders = function () {};
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

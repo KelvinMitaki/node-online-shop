@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Order = require("../models/order");
 
 exports.getProducts = async (req, res, next) => {
   const products = await Product.find({});
@@ -64,8 +65,7 @@ exports.postOrder = async (req, res, next) => {
 };
 
 exports.getOrders = async (req, res, next) => {
-  const orders = await req.user.getUserOrders();
-
+  const orders = await Order.find({ "user._id": req.user._id });
   res.render("shop/orders", {
     path: "/orders",
     pageTitle: "Your Orders",
