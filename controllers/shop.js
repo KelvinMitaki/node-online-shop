@@ -63,6 +63,15 @@ exports.postCart = async (req, res, next) => {
   res.redirect("/cart");
 };
 
+exports.postOrder = async (req, res, next) => {
+  try {
+    await req.user.addOrder();
+    res.redirect("/orders");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     path: "/orders",

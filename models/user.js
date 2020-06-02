@@ -103,6 +103,17 @@ class User {
       };
     });
   }
+  async addOrder() {
+    await getDb().db().collection("orders").insertOne(this.cart);
+    this.cart = { items: [] };
+    await getDb()
+      .db()
+      .collection("users")
+      .updateOne(
+        { _id: new mongodb.ObjectId(this._id) },
+        { $set: { "cart.items": [] } }
+      );
+  }
   static async findById(id) {
     return await getDb()
       .db()
