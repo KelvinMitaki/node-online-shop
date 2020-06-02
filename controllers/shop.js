@@ -1,8 +1,4 @@
-const mongodb = require("mongodb");
-const { getDb } = require("../utils/database");
-
 const Product = require("../models/product");
-const Cart = require("../models/cart");
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
@@ -74,7 +70,7 @@ exports.postOrder = async (req, res, next) => {
 
 exports.getOrders = async (req, res, next) => {
   const orders = await req.user.getUserOrders();
-  console.log(orders);
+
   res.render("shop/orders", {
     path: "/orders",
     pageTitle: "Your Orders",

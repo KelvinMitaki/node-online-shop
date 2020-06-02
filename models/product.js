@@ -24,6 +24,15 @@ module.exports = class Product {
       .db()
       .collection("products")
       .deleteOne({ _id: new ObjectId(id) });
+    // TO BE CONFIRMED
+    await getDb()
+      .db()
+      .collection("users")
+      .updateOne(
+        {},
+        { $unset: { "cart.items.$[el]": "" } },
+        { arrayFilters: [{ el: new ObjectId(id) }] }
+      );
   }
   static async fetchAll(cb) {
     const result = await getDb().db().collection("products").find({}).toArray();

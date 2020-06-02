@@ -2,12 +2,12 @@ const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const User = require("./models/user");
-const { MongoConnect } = require("./utils/database");
 
 const app = express();
 
@@ -34,10 +34,16 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 const PORT = process.env.PORT || 3000;
-MongoConnect((err, client) => {
-  if (err) {
-    return console.log(err);
-  }
 
-  app.listen(PORT, () => console.log(`server started on port ${PORT}`));
-});
+const MongooseConnect = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_CLIENT, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true
+    });
+    app.listen(PORT, () => console.log(`server started on port ${PORT}`));
+  } catch (error) {
+    console.log(error);
+  }
+};
+MongooseConnect();
