@@ -72,10 +72,13 @@ exports.postOrder = async (req, res, next) => {
   }
 };
 
-exports.getOrders = (req, res, next) => {
+exports.getOrders = async (req, res, next) => {
+  const orders = await req.user.getUserOrders();
+  console.log(orders);
   res.render("shop/orders", {
     path: "/orders",
-    pageTitle: "Your Orders"
+    pageTitle: "Your Orders",
+    orders
   });
 };
 

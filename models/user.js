@@ -119,6 +119,13 @@ class User {
         { $set: { "cart.items": [] } }
       );
   }
+  async getUserOrders() {
+    return await getDb()
+      .db()
+      .collection("orders")
+      .find({ "user._id": this._id })
+      .toArray();
+  }
   static async findById(id) {
     return await getDb()
       .db()
