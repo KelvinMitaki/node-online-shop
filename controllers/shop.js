@@ -37,12 +37,14 @@ exports.deleteCart = async (req, res, next) => {
 };
 
 exports.getCart = async (req, res, next) => {
-  const productsInCart = await req.user.getProductCart();
+  const productsInCart = await req.user
+    .populate("cart.items.productId")
+    .execPopulate();
 
   res.render("shop/cart", {
     path: "/cart",
     pageTitle: "Your Cart",
-    itemsInCart: productsInCart
+    itemsInCart: productsInCart.cart.items
   });
 };
 
