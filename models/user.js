@@ -104,7 +104,12 @@ class User {
     });
   }
   async addOrder() {
-    await getDb().db().collection("orders").insertOne(this.cart);
+    const productsInCart = await this.getProductCart();
+    const order = {
+      items: productsInCart,
+      user: { _id: new mongodb.ObjectId(this._id), name: this.username }
+    };
+    await getDb().db().collection("orders").insertOne(order);
     this.cart = { items: [] };
     await getDb()
       .db()
