@@ -47,6 +47,27 @@ UserSchema.methods.addToCart = function (product) {
   this.save();
 };
 
+UserSchema.methods.deleteFromCart = function (product) {
+  const cartProductIndex = this.cart.items.findIndex(
+    prod => prod.productId.toString() === product._id.toString()
+  );
+
+  const cartItems = [...this.cart.items];
+  const cartQuantity = cartItems[cartProductIndex].quantity;
+  if (cartQuantity === 1) {
+    const newCartItems = cartItems.filter(
+      item => item.productId.toString() !== product._id.toString()
+    );
+    this.cart.items = newCartItems;
+    this.save();
+  } else {
+    const newQuantity = cartQuantity - 1;
+    cartItems[cartProductIndex].quantity = newQuantity;
+    this.cart.items = cartItems;
+    this.save();
+  }
+};
+
 const User = mongoose.model("User", UserSchema);
 module.exports = User;
 // class User {

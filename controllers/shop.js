@@ -29,9 +29,8 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.deleteCart = async (req, res, next) => {
-  await Product.findById(req.body.productId, async product => {
-    await req.user.deleteFromCart(product);
-  });
+  const product = await Product.findById(req.body.productId);
+  await req.user.deleteFromCart(product);
 
   res.redirect("/cart");
 };
