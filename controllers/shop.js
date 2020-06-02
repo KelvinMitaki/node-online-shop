@@ -9,15 +9,13 @@ exports.getProducts = async (req, res, next) => {
   });
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
-
-  Product.findById(prodId, product => {
-    res.render("shop/product-detail", {
-      product,
-      pageTitle: product.title,
-      path: "/products"
-    });
+  const product = await Product.findById(prodId);
+  res.render("shop/product-detail", {
+    product,
+    pageTitle: product.title,
+    path: "/products"
   });
 };
 
