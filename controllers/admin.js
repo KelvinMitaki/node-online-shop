@@ -9,20 +9,17 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = async (req, res, next) => {
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const price = req.body.price;
-  const description = req.body.description;
-  const product = new Product(
-    title,
-    imageUrl,
-    description,
-    price,
-    req.user._id
-  );
-  await product.save();
-
-  res.redirect("/");
+  try {
+    const title = req.body.title;
+    const imageUrl = req.body.imageUrl;
+    const price = req.body.price;
+    const description = req.body.description;
+    const product = new Product({ title, imageUrl, description, price });
+    await product.save();
+    res.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
 };
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
