@@ -17,16 +17,15 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use(async (req, res, next) => {
-//   try {
-//     const user = await User.findById("5ed4e8c8d1540296447ff728");
-//     req.user = new User(user.username, user.email, user.cart, user._id);
-
-//     next();
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
+app.use(async (req, res, next) => {
+  try {
+    const user = await User.findById("5ed650125d58464f18a77ba4");
+    req.user = user;
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -42,6 +41,15 @@ const MongooseConnect = async () => {
       useNewUrlParser: true,
       useFindAndModify: false
     });
+    const user = await User.findOne();
+    if (!user) {
+      const user = new User({
+        name: "kevin mitaki",
+        email: "kevinkhalifa911@gmail.com",
+        cart: { items: [] }
+      });
+      await user.save();
+    }
     app.listen(PORT, () => console.log(`server started on port ${PORT}`));
   } catch (error) {
     console.log(error);

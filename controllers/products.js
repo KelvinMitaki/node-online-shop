@@ -9,11 +9,6 @@ const getAddProduct = (req, res) => {
   });
 };
 
-const postAddProduct = (req, res) => {
-  const product = new Product(req.body.title);
-  product.save();
-  res.redirect("/");
-};
 const getShop = (req, res) => {
   const prods = Product.fetchAll();
 
