@@ -1,3 +1,6 @@
+const mongodb = require("mongodb");
+const { getDb } = require("../utils/database");
+
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 
@@ -33,17 +36,16 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
-exports.deleteCart = (req, res, next) => {
-  Product.findById(req.body.productId, product =>
-    Cart.deleteFromCart(req.body.productId, product.price)
-  );
+exports.deleteCart = async (req, res, next) => {
+  await Product.findById(req.body.productId, async product => {
+    await req.user.deleteFromCart(product);
+  });
 
   res.redirect("/cart");
 };
 
 exports.getCart = async (req, res, next) => {
   const productsInCart = await req.user.getProductCart();
-
   res.render("shop/cart", {
     path: "/cart",
     pageTitle: "Your Cart",
@@ -73,32 +75,3 @@ exports.getCheckout = (req, res, next) => {
     pageTitle: "Checkout"
   });
 };
-
-// Say I have two arrays
-
-// **ARRAY 1:**
-
-// ```
-// [
-//   {
-//     id: '0.3385486959963888',
-//     title: 'product 1'
-//   },
-//   {
-//     id: '0.5307392257622798',
-//     title: 'product 2'
-//   },
-//   {
-//     id: '0.036769713944472926',
-//     title: 'product 3'
-//   }
-// ]
-// ```
-// **ARRAY 2:**
-// ```
-// [
-//   { id: '0.3385486959963888', quantity: 2 },
-//   { id: '0.5307392257622798', quantity: 3 }
-// ]
-// ```
-// I want to compare them and return from array 1 only the products that the IDs are matching the IDs in array two, how can I do that

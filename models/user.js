@@ -13,11 +13,28 @@ class User {
     await getDb().db().collection("users").insertOne(this);
   }
   async addToCart(product) {
+    if (!this.cart) {
+      this.cart = {};
+      this.cart.items = [];
+      this.cart.items.push({
+        productId: new mongodb.ObjectId(product._id),
+        quantity: 1
+      });
+      await getDb()
+        .db()
+        .collection("users")
+        .updateOne(
+          { _id: new mongodb.ObjectId(this._id) },
+          { $set: { cart: this.cart } }
+        );
+      return;
+    }
+    const updatedCartItems = [...this.cart.items];
+    let newQuantity = 1;
     const cartProductIndex = this.cart.items.findIndex(
       pro => pro.productId.toString() === product._id.toString()
     );
-    const updatedCartItems = [...this.cart.items];
-    let newQuantity = 1;
+
     if (cartProductIndex !== -1) {
       newQuantity = updatedCartItems[cartProductIndex].quantity + 1;
       updatedCartItems[cartProductIndex].quantity = newQuantity;
@@ -38,6 +55,36 @@ class User {
         { _id: new mongodb.ObjectId(this._id) },
         { $set: { cart: updatedCart } }
       );
+  }
+  async deleteFromCart(product) {
+    console.log("delete from cart", this.cart);
+    const cartProductIndex = this.cart.items.findIndex(
+      prod => prod.productId.toString() === product._id.toString()
+    );
+    const cartItems = [...this.cart.items];
+    const cartQuantity = cartItems[cartProductIndex].quantity;
+    if (cartQuantity === 1) {
+      const newCartItems = cartItems.filter(
+        item => item.productId.toString() !== product._id.toString()
+      );
+      await getDb()
+        .db()
+        .collection("users")
+        .updateOne(
+          { _id: new mongodb.ObjectId(this._id) },
+          { $set: { "cart.items": newCartItems } }
+        );
+    } else {
+      const newQuantity = cartQuantity - 1;
+      cartItems[cartProductIndex].quantity = newQuantity;
+      await getDb()
+        .db()
+        .collection("users")
+        .updateOne(
+          { _id: new mongodb.ObjectId(this._id) },
+          { $set: { "cart.items": cartItems } }
+        );
+    }
   }
   async getProductCart() {
     const productIds = this.cart.items.map(item => item.productId);
