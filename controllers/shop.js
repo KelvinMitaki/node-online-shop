@@ -46,6 +46,7 @@ exports.deleteCart = async (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
   const productsInCart = await req.user.getProductCart();
+
   res.render("shop/cart", {
     path: "/cart",
     pageTitle: "Your Cart",

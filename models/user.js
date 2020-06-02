@@ -57,10 +57,10 @@ class User {
       );
   }
   async deleteFromCart(product) {
-    console.log("delete from cart", this.cart);
     const cartProductIndex = this.cart.items.findIndex(
       prod => prod.productId.toString() === product._id.toString()
     );
+
     const cartItems = [...this.cart.items];
     const cartQuantity = cartItems[cartProductIndex].quantity;
     if (cartQuantity === 1) {
@@ -94,9 +94,9 @@ class User {
       .find({ _id: { $in: productIds } })
       .toArray();
     return products.map(product => {
-      const productQuantity = this.cart.items.filter(
+      const productQuantity = this.cart.items.find(
         item => item.productId.toString() === product._id.toString()
-      )[0].quantity;
+      ).quantity;
       return {
         ...product,
         quantity: productQuantity
