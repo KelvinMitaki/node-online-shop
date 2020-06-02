@@ -76,7 +76,7 @@ exports.postDeleteProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({}).populate("userId");
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
