@@ -5,7 +5,8 @@ const getAddProduct = (req, res) => {
     path: "/admin/add-product",
     formsCSS: true,
     productCSS: true,
-    activeAddProduct: true
+    activeAddProduct: true,
+    isAuthenticated: req.isLoggedIn
   });
 };
 
@@ -18,7 +19,8 @@ const getShop = (req, res) => {
     path: "/",
     hasProducts: prods.length > 0,
     activeShop: true,
-    productCSS: true
+    productCSS: true,
+    isAuthenticated: req.isLoggedIn
   });
 };
 

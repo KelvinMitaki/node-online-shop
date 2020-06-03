@@ -1,7 +1,8 @@
 const route = require("express").Router();
 
-const { getLogin } = require("../controllers/auth");
+const { getLogin, postLogin } = require("../controllers/auth");
 
 route.get("/login", getLogin);
+route.post("/login", postLogin);
 
 module.exports = route;
