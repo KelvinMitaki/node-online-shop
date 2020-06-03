@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
@@ -12,6 +13,11 @@ const authRoutes = require("./routes/auth");
 const User = require("./models/user");
 
 const app = express();
+
+const store = new MongoDBStore({
+  uri: process.env.MONGO_CLIENT,
+  collection: "sessions"
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -22,7 +28,8 @@ app.use(
   session({
     secret: process.env.SECRET,
     saveUninitialized: false,
-    resave: false
+    resave: false,
+    store: store
   })
 );
 
