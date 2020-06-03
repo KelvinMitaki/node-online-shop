@@ -33,7 +33,9 @@
                 <a href="/login" class="<%=path==='/login'?'active':''%>">Login</a>
             </li>
             <li class="main-header__item">
-                <a href="/logout" class="<%=path==='/logout'?'active':''%>">Logout</a>
+                <form action="/logout" method="post">
+                    <button type="submit">Logout</button>
+                </form>
             </li>
         </ul>
     </nav>
