@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
 
 const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
@@ -32,7 +33,7 @@ app.use(
     store: store
   })
 );
-
+app.use(csrf());
 app.use(async (req, res, next) => {
   try {
     if (!req.session.user) {
@@ -44,6 +45,12 @@ app.use(async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use("/admin", adminRoutes);
