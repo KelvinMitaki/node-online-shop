@@ -6,7 +6,7 @@ const getAddProduct = (req, res) => {
     formsCSS: true,
     productCSS: true,
     activeAddProduct: true,
-    isAuthenticated: req.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 
@@ -20,7 +20,7 @@ const getShop = (req, res) => {
     hasProducts: prods.length > 0,
     activeShop: true,
     productCSS: true,
-    isAuthenticated: req.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 
