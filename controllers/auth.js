@@ -28,4 +28,15 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
-exports.postSignup = (req, res, next) => {};
+exports.postSignup = async (req, res, next) => {
+  const { email } = req.body;
+  const { password } = req.body;
+  const { confirmPaswword } = req.body;
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.redirect("/login");
+  }
+  const user = new User({ email, password, cart: { items: [] } });
+  await user.save();
+  res.redirect("/login");
+};

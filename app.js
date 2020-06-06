@@ -59,17 +59,10 @@ const MongooseConnect = async () => {
     await mongoose.connect(process.env.MONGO_CLIENT, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
-      useFindAndModify: false
+      useFindAndModify: false,
+      useCreateIndex: true
     });
-    const user = await User.findOne();
-    if (!user) {
-      const user = new User({
-        name: "kevin mitaki",
-        email: "kevinkhalifa911@gmail.com",
-        cart: { items: [] }
-      });
-      await user.save();
-    }
+
     app.listen(PORT, () => console.log(`server started on port ${PORT}`));
   } catch (error) {
     console.log(error);
