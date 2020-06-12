@@ -1,6 +1,16 @@
 const bcrypt = require("bcryptjs");
+const nodeMailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 const User = require("../models/user");
+
+const transporter = nodeMailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: process.env.SENDGRID
+    }
+  })
+);
 
 exports.getLogin = (req, res, next) => {
   if (req.session.isLoggedIn) {
@@ -33,6 +43,7 @@ exports.postLogin = async (req, res, next) => {
       req.flash("error", "invalid password");
       return res.redirect("/login");
     }
+
     req.session.user = user;
     req.session.isLoggedIn = true;
     res.redirect("/");
@@ -50,10 +61,16 @@ exports.getSignup = (req, res, next) => {
   if (req.session.isLoggedIn) {
     return res.redirect("/");
   }
+  let showError = req.flash("error");
+  if (showError.length > 0) {
+    showError = showError[0];
+  } else {
+    showError = null;
+  }
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    isAuthenticated: false
+    errorMessage: showError
   });
 };
 
@@ -64,7 +81,8 @@ exports.postSignup = async (req, res, next) => {
     const { confirmPaswword } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.redirect("/login");
+      req.flash("error", "email already exists");
+      return res.redirect("/signup");
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = new User({
@@ -73,6 +91,18 @@ exports.postSignup = async (req, res, next) => {
       cart: { items: [] }
     });
     await user.save();
+    await transporter.sendMail(
+      {
+        to: email,
+        from: "kevinkhalifa911@gmail.com",
+        subject: "Sign up succeed",
+        html: "<h1>You have successfully signed up</h1>"
+      },
+      (err, info) => {
+        if (err) console.log(err);
+        console.log(info);
+      }
+    );
     res.redirect("/login");
   } catch (error) {
     console.log(error);
