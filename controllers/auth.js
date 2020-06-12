@@ -3,10 +3,19 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
+  if (req.session.isLoggedIn) {
+    return res.redirect("/");
+  }
+  let showError = req.flash("error");
+  if (showError.length > 0) {
+    showError = showError[0];
+  } else {
+    showError = null;
+  }
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    errorMessage: req.flash("error")
+    errorMessage: showError
   });
 };
 
@@ -38,6 +47,9 @@ exports.postLogout = (req, res, next) => {
   });
 };
 exports.getSignup = (req, res, next) => {
+  if (req.session.isLoggedIn) {
+    return res.redirect("/");
+  }
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
