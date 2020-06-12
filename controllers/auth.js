@@ -91,6 +91,8 @@ exports.postSignup = async (req, res, next) => {
       cart: { items: [] }
     });
     await user.save();
+
+    res.redirect("/login");
     await transporter.sendMail(
       {
         to: email,
@@ -103,7 +105,6 @@ exports.postSignup = async (req, res, next) => {
         console.log(info);
       }
     );
-    res.redirect("/login");
   } catch (error) {
     console.log(error);
   }
