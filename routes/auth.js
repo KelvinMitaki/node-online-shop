@@ -6,7 +6,8 @@ const {
   postLogout,
   getSignup,
   postSignup,
-  getReset
+  getReset,
+  postReset
 } = require("../controllers/auth");
 
 route.get("/login", getLogin);
@@ -15,5 +16,6 @@ route.post("/logout", postLogout);
 route.get("/signup", getSignup);
 route.post("/signup", postSignup);
 route.get("/reset", getReset);
+route.post("/reset", postReset);
 
 module.exports = route;
