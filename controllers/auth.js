@@ -74,6 +74,23 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
+exports.getReset = (req, res, next) => {
+  if (req.session.isLoggedIn) {
+    return res.redirect("/");
+  }
+  let showError = req.flash("error");
+  if (showError.length > 0) {
+    showError = showError[0];
+  } else {
+    showError = null;
+  }
+  res.render("auth/reset", {
+    path: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: showError
+  });
+};
+
 exports.postSignup = async (req, res, next) => {
   try {
     const { email } = req.body;
