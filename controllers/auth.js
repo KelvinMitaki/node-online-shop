@@ -95,32 +95,37 @@ exports.getReset = (req, res, next) => {
 
 exports.postReset = (req, res, next) => {
   crypto.randomBytes(32, async (err, buffer) => {
-    if (err) {
-      console.log(err);
-      return res.redirect("/reset");
-    }
-    const token = buffer.toString("hex");
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      req.flash("error", "No user with that email");
-      return res.redirect("/reset");
-    }
-    user.resetToken = token;
-    user.resetTokenExpiration = new Date.now() + 3600000;
-    await user.save();
-    transporter.sendMail(
-      {
-        to: req.body.email,
-        from: "kevinkhalifa911@gmail.com",
-        subject: "Password Reset",
-        html: `<h1>You requested a password reset</h1>
-        <p>click this <a href="http://localhost:3000/reset/${token}"></a> to set a new password </p>`
-      },
-      (err, info) => {
-        if (err) console.log(err);
-        console.log(info);
+    try {
+      if (err) {
+        console.log(err);
+        return res.redirect("/reset");
       }
-    );
+      const token = buffer.toString("hex");
+      const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        req.flash("error", "No user with that email");
+        return res.redirect("/reset");
+      }
+      user.resetToken = token;
+      user.resetTokenExpiration = Date.now() + 3600000;
+      await user.save();
+      transporter.sendMail(
+        {
+          to: req.body.email,
+          from: "kevinkhalifa911@gmail.com",
+          subject: "Password Reset",
+          html: `<h1>You requested a password reset</h1>
+          <p>click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password </p>`
+        },
+        (err, info) => {
+          if (err) console.log(err);
+          console.log(info);
+        }
+      );
+      res.redirect("/login");
+    } catch (error) {
+      console.log(error);
+    }
   });
 };
 
