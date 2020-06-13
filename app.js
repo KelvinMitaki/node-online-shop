@@ -31,7 +31,10 @@ app.use(
     secret: process.env.SECRET,
     saveUninitialized: false,
     resave: false,
-    store: store
+    store: store,
+    cookie: {
+      expires: 60 * 60 * 1000 * 60 * 24
+    }
   })
 );
 app.use(csrf());
@@ -52,7 +55,9 @@ app.use(async (req, res, next) => {
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
-  res.locals.admin = req.user.admin;
+  if (req.user) {
+    res.locals.admin = req.user.admin;
+  }
   next();
 });
 
