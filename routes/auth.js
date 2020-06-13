@@ -7,7 +7,9 @@ const {
   getSignup,
   postSignup,
   getReset,
-  postReset
+  postReset,
+  getNewPassword,
+  postNewPassword
 } = require("../controllers/auth");
 
 route.get("/login", getLogin);
@@ -17,5 +19,7 @@ route.get("/signup", getSignup);
 route.post("/signup", postSignup);
 route.get("/reset", getReset);
 route.post("/reset", postReset);
+route.get("/reset/:token", getNewPassword);
+route.post("/new-password", postNewPassword);
 
 module.exports = route;
