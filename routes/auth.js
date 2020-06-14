@@ -20,6 +20,9 @@ route.get("/signup", getSignup);
 route.post(
   "/signup",
   check("email").isEmail().withMessage("Please enter a valid email"),
+  check("password")
+    .isLength({ min: 6 })
+    .withMessage("The password must be at least 6 characters"),
   postSignup
 );
 route.get("/reset", getReset);
