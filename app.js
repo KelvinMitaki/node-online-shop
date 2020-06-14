@@ -33,7 +33,7 @@ app.use(
     resave: false,
     store: store,
     cookie: {
-      expires: 60 * 60 * 1000 * 60 * 24
+      maxAge: 60000 * 60
     }
   })
 );
