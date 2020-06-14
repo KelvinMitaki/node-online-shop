@@ -1,5 +1,5 @@
 const route = require("express").Router();
-const { check } = require("express-validator");
+const { check, body } = require("express-validator");
 
 const {
   getLogin,
@@ -23,6 +23,12 @@ route.post(
   check("password")
     .isLength({ min: 6 })
     .withMessage("The password must be at least 6 characters"),
+  check("confirmPassword").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("Passwords do not match");
+    }
+    return true;
+  }),
   postSignup
 );
 route.get("/reset", getReset);
