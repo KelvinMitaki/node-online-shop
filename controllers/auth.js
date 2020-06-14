@@ -25,10 +25,14 @@ exports.getLogin = (req, res, next) => {
   } else {
     showError = null;
   }
+
+  console.log(req.body);
+
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    errorMessage: showError
+    errorMessage: showError,
+    oldInput: { email: "", password: "" }
   });
 };
 
@@ -36,15 +40,31 @@ exports.postLogin = async (req, res, next) => {
   try {
     const { password } = req.body;
     const { email } = req.body;
+    let showError = req.flash("error");
+    if (showError.length > 0) {
+      showError = showError[0];
+    } else {
+      showError = null;
+    }
     const user = await User.findOne({ email });
     if (!user) {
       req.flash("error", "invalid email");
-      return res.redirect("/login");
+      return res.render("auth/login", {
+        path: "/login",
+        pageTitle: "login",
+        errorMessage: showError,
+        oldInput: { email, password }
+      });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       req.flash("error", "invalid password");
-      return res.redirect("/login");
+      return res.render("auth/login", {
+        path: "/login",
+        pageTitle: "login",
+        errorMessage: showError,
+        oldInput: { email, password }
+      });
     }
     if (user.email === "mitakikelvin1@gmail.com") {
       user.admin = true;
