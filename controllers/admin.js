@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
+const fs = require("fs");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -94,13 +95,17 @@ exports.postEditProduct = async (req, res, next) => {
         product: { title, price, description }
       });
     }
-    const imageUrl = image.path;
-    await Product.findByIdAndUpdate(prodId, {
-      title,
-      imageUrl,
-      description,
-      price
-    });
+    if (image) {
+      const prod = await Product.findOne({ _id: prodId });
+      fs.unlink(prod.imageUrl, err => err && err);
+      const imageUrl = image.path;
+      await Product.findByIdAndUpdate(prodId, {
+        title,
+        imageUrl,
+        description,
+        price
+      });
+    }
     res.redirect("/admin/products");
   } catch (error) {
     console.log(error);
@@ -110,7 +115,8 @@ exports.postEditProduct = async (req, res, next) => {
 exports.postDeleteProduct = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
-    await Product.findByIdAndDelete(prodId);
+    const prod = await Product.findByIdAndDelete(prodId);
+    fs.unlink(prod.imageUrl, err => err && err);
     res.redirect("/admin/products");
   } catch (error) {
     console.log(error);
