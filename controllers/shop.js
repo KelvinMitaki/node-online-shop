@@ -33,9 +33,6 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    if (req.session.user) {
-      await User.findOne({ email: req.session.user.email });
-    }
     const products = await Product.find();
     res.render("shop/index", {
       prods: products,

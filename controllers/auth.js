@@ -70,8 +70,7 @@ exports.postLogin = async (req, res, next) => {
     }
     req.session.user = user;
     req.session.isLoggedIn = true;
-
-    res.redirect("/");
+    req.session.save(() => res.redirect("/"));
   } catch (error) {
     console.log(error);
   }
