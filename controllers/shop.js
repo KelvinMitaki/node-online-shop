@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
+const User = require("../models/user");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -32,6 +33,9 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
+    if (req.session.user) {
+      await User.findOne({ email: req.session.user.email });
+    }
     const products = await Product.find();
     res.render("shop/index", {
       prods: products,

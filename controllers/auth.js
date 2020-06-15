@@ -26,8 +26,6 @@ exports.getLogin = (req, res, next) => {
     showError = null;
   }
 
-  console.log(req.body);
-
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
@@ -70,9 +68,9 @@ exports.postLogin = async (req, res, next) => {
       user.admin = true;
       await user.save();
     }
-
     req.session.user = user;
     req.session.isLoggedIn = true;
+
     res.redirect("/");
   } catch (error) {
     console.log(error);

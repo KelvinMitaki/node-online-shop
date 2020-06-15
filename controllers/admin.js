@@ -1,11 +1,13 @@
 const Product = require("../models/product");
+const { validationResult } = require("express-validator");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
+    errorMessage: ""
   });
 };
 
@@ -15,6 +17,17 @@ exports.postAddProduct = async (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render("admin/edit-product", {
+        pageTitle: "Add Product",
+        path: "/admin/add-product",
+        editing: true,
+        isAuthenticated: req.session.isLoggedIn,
+        errorMessage: errors.array()[0].msg,
+        product: { title, imageUrl, price, description }
+      });
+    }
     const product = new Product({
       title,
       imageUrl,
@@ -54,6 +67,16 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
     const { title, imageUrl, description, price } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.render("admin/edit-product", {
+        pageTitle: "Add Product",
+        path: "/admin/add-product",
+        editing: false,
+        isAuthenticated: req.session.isLoggedIn,
+        errorMessage: errors.array()[0].msg
+      });
+    }
     await Product.findByIdAndUpdate(prodId, {
       title,
       imageUrl,
