@@ -39,15 +39,22 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const page = req.query.page;
+    const page = +req.query.page || 1;
     const products = await Product.find()
       .skip((page - 1) * ITEMS_PER_PAGE)
       .limit(ITEMS_PER_PAGE);
+    const totalProducts = await Product.countDocuments();
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",
       path: "/",
-      isAuthenticated: req.session.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn,
+      page,
+      hasNextPage: page * ITEMS_PER_PAGE < totalProducts,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE)
     });
   } catch (error) {
     console.log(error);

@@ -29,8 +29,20 @@
         </div>
         <section class="pagination">
            
+            <%  if(page !==1  ){%>
             <a href="?page=1">1</a>
-            <a href="?page=2">2</a>
+            <% }%>
+               <% if(hasPreviousPage && previousPage!==1){%>
+                <a href="?page=<%=previousPage%>"><%=previousPage%></a>
+               <% }%>
+                <a href="?page=<%=page%>" class="active"><%=page%></a>
+              
+                <%if(hasNextPage){%>
+                    <a href="?page=<%=nextPage%>"><%=nextPage%></a>
+               <% }%>
+               <%if(lastPage!==1&&lastPage!==nextPage &&lastPage!==page){%>
+                <a href="?page=<%=lastPage%>"><%=lastPage%></a>
+               <%}%>
       
     </section>
         <% } else { %>
