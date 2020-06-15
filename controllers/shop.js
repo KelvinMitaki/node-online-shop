@@ -2,9 +2,15 @@ const Product = require("../models/product");
 const Order = require("../models/order");
 const User = require("../models/user");
 
+const ITEMS_PER_PAGE = 1;
+
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({});
+    const page = req.query.page;
+
+    const products = await Product.find({})
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
     res.render("shop/product-list", {
       prods: products,
       pageTitle: "All Products",
@@ -33,7 +39,10 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const page = req.query.page;
+    const products = await Product.find()
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",
