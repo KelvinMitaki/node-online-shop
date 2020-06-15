@@ -1,4 +1,5 @@
 const path = require("path");
+const { mkdirSync } = require("fs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -7,6 +8,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
@@ -15,6 +17,19 @@ const authRoutes = require("./routes/auth");
 const User = require("./models/user");
 
 const app = express();
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    mkdirSync("./images", { recursive: true });
+    cb(null, "./images");
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      `${new Date().toISOString().replace(/:/g, "-")}-${file.originalname}`
+    );
+  }
+});
 
 const store = new MongoDBStore({
   uri: process.env.MONGO_CLIENT,
@@ -25,6 +40,22 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({
+    storage: fileStorage,
+    fileFilter: (req, file, cb) => {
+      if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg"
+      ) {
+        cb(null, true);
+      } else {
+        cb(null, false);
+      }
+    }
+  }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
@@ -42,9 +73,7 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
-  if (req.user) {
-    res.locals.admin = req.user.admin;
-  }
+
   next();
 });
 app.use(async (req, res, next) => {
@@ -58,6 +87,12 @@ app.use(async (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
+});
+app.use((req, res, next) => {
+  if (req.user) {
+    res.locals.admin = req.user.admin;
+  }
+  next();
 });
 
 app.use("/admin", adminRoutes);
@@ -76,10 +111,9 @@ const MongooseConnect = async () => {
       useFindAndModify: false,
       useCreateIndex: true
     });
-
-    app.listen(PORT, () => console.log(`server started on port ${PORT}`));
   } catch (error) {
     console.log(error);
   }
 };
+app.listen(PORT, () => console.log(`server started on port ${PORT}`));
 MongooseConnect();
