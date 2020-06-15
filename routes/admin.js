@@ -20,7 +20,7 @@ router.post(
     .trim()
     .isLength({ min: 3 })
     .withMessage("Please enter a title with more than three characters"),
-  check("imageUrl").trim().isURL().withMessage("Please enter a valid URL"),
+
   check("price").trim().isFloat().withMessage("Please enter a decimal"),
   check("description")
     .trim()
@@ -35,7 +35,7 @@ router.post(
     .trim()
     .isLength({ min: 3 })
     .withMessage("Please enter a title with more than three characters"),
-  check("imageUrl").trim().isURL().withMessage("Please enter a valid URL"),
+
   check("price").trim().isFloat().withMessage("Please enter a decimal"),
   check("description")
     .trim()
