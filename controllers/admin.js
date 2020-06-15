@@ -57,7 +57,8 @@ exports.getEditProduct = async (req, res, next) => {
       path: "/admin/edit-product",
       editing: editMode,
       product,
-      isAuthenticated: req.session.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn,
+      errorMessage: ""
     });
   } catch (error) {
     console.log(error);
@@ -74,7 +75,9 @@ exports.postEditProduct = async (req, res, next) => {
         path: "/admin/add-product",
         editing: false,
         isAuthenticated: req.session.isLoggedIn,
-        errorMessage: errors.array()[0].msg
+        errorMessage: errors.array()[0].msg,
+        editing: true,
+        product: { title, imageUrl, price, description }
       });
     }
     await Product.findByIdAndUpdate(prodId, {

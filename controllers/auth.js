@@ -60,7 +60,7 @@ exports.postLogin = async (req, res, next) => {
       return res.render("auth/login", {
         path: "/login",
         pageTitle: "login",
-        errorMessage: showError,
+        errorMessage: "invalid password",
         oldInput: { email, password }
       });
     }
