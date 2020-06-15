@@ -2,6 +2,8 @@ const Product = require("../models/product");
 const { validationResult } = require("express-validator");
 const fs = require("fs");
 
+const ITEMS_PER_PAGE = 1;
+
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
@@ -125,12 +127,22 @@ exports.postDeleteProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({});
+    const page = +req.query.page || 1;
+    const products = await Product.find({})
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
+    const totalProducts = await Product.countDocuments();
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",
       path: "/admin/products",
-      isAuthenticated: req.session.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn,
+      page,
+      hasNextPage: page * ITEMS_PER_PAGE < totalProducts,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE)
     });
   } catch (error) {
     console.log(error);

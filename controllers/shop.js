@@ -6,16 +6,23 @@ const ITEMS_PER_PAGE = 1;
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const page = req.query.page;
+    const page = +req.query.page || 1;
 
     const products = await Product.find({})
       .skip((page - 1) * ITEMS_PER_PAGE)
       .limit(ITEMS_PER_PAGE);
+    const totalProducts = await Product.countDocuments();
     res.render("shop/product-list", {
       prods: products,
       pageTitle: "All Products",
       path: "/products",
-      isAuthenticated: req.session.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn,
+      page,
+      hasNextPage: page * ITEMS_PER_PAGE < totalProducts,
+      hasPreviousPage: page > 1,
+      nextPage: page + 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE)
     });
   } catch (error) {
     console.log(error);

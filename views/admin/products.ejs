@@ -38,17 +38,11 @@
             </article>
             <% } %>
         </div>
-        <section class="pagination">
            
-                <a href="?page=1">1</a>
-               <% if(hasPreviousPage && previousPage!==1){%>
-                <a href="?page=<%=previousPage%>"><%=previousPage%></a>
-               <% }%>
-                <%if(hasNextPage){%>
-                    <a href="?page=<%=nextPage%>"><%=nextPage%></a>
-               <% }%>
+             
+    <%- include('../includes/pagination.ejs',{page,hasPreviousPage,hasNextPage,lastPage}) %>
           
-        </section>
+    
         <% } else { %>
         <h1>No Products Found!</h1>
         <% } %>
